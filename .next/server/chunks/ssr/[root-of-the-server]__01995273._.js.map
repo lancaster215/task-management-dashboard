@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 5, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Francisco%20Ifurung/Desktop/to-do-app/src/pages/index.tsx"],"sourcesContent":["// import Head from \"next/head\";\n// import Image from \"next/image\";\nimport { Geist, Geist_Mono } from \"next/font/google\";\n\nexport default function Home() {\n  return (\n    <TodoAppMainPage />\n  );\n}\n"],"names":[],"mappings":"AAAA,gCAAgC;AAChC,kCAAkC;;;;;;AAGnB,SAAS;IACtB,qBACE,qKAAC;;;;;AAEL","debugId":null}}]
+}

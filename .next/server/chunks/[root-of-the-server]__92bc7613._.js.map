@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 21, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Francisco%20Ifurung/Desktop/to-do-app/src/pages/api/task.ts"],"sourcesContent":["// Next.js API route support: https://nextjs.org/docs/api-routes/introduction\nimport type { NextApiRequest, NextApiResponse } from \"next\";\n// import express, { Request, Response } from 'express';\n// const port = 3000;\n// const app = express();\n// app.use(express.json());\n\n// app.get('/api/data', (req: Request, res: Response) => {\n//   res.json({ message: {name: 'Wash Dishes', time: '1'} })\n// })\n\n// app.listen(3000, () => console.log(`Listening at port ${port}`))\n\nexport default function handler(req: NextApiRequest, res: NextApiResponse) {\n  res.status(200).json({ name: 'Washing Dishes', time: '1' })\n}\n"],"names":[],"mappings":"AAAA,6EAA6E;;;;AAa9D,SAAS,QAAQ,GAAmB,EAAE,GAAoB;IACvE,IAAI,MAAM,CAAC,KAAK,IAAI,CAAC;QAAE,MAAM;QAAkB,MAAM;IAAI;AAC3D","debugId":null}}]
+}
