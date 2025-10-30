@@ -4,14 +4,18 @@ import type { NextApiRequest, NextApiResponse } from "next";
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
     try {
         if(req.method === 'POST') {
-            const { id } = req.body;
+            const { selected } = req.body;
+            console.log(selected, 'delete id')
+            if (!Array.isArray(selected) || selected.length === 0) {
+                return res.status(400).json({ error: "Request body must contain a non-empty array of IDs." });
+            }
 
-            await pool.query("DELETE FROM tasks WHERE id=($1)", [id])
+            const placeholders = selected.map((_, index) => `$${index + 1}`).join(", ");
+            const query = `DELETE FROM "Task" WHERE id IN (${placeholders})`;
+            await pool.query(query, selected)
 
-            return res.status(200).json({ message: 'Successfully removed task'})    
+            return res.status(200).json({ message: 'Successfully removed selected task/s'})    
         }
-        const result = await pool.query("SELECT * FROM tasks ORDER BY id DESC");
-        res.status(200).json(result.rows)
     } catch (err) {
         console.error(`Error in deleteing task: ${err}`)
     }

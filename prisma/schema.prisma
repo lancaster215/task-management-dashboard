@@ -9,7 +9,7 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
-datasource db { -
+datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
@@ -23,7 +23,7 @@ model Task {
   dueDate     DateTime?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  tags        TaskTag[]  @relation("TaskToTaskTag")
+  tags        TaskTag    @default(FEATURE)
   assigneeId  String?
   assignee    User?      @relation("AssignedTasks", fields: [assigneeId], references: [id])
 }
@@ -35,10 +35,10 @@ model User {
   tasks  Task[]  @relation("AssignedTasks")
 }
 
-model TaskTag {
-  id    String @id @default(uuid())
-  name  String @unique
-  tasks Task[] @relation("TaskToTaskTag")
+enum TaskTag {
+  FEATURE
+  BUG
+  ENHANCEMENT
 }
 
 enum TaskStatus {

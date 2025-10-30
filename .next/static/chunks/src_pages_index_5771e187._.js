@@ -7,10 +7,10 @@
   "static/chunks/node_modules_next_dist_client_becf32a6._.js",
   "static/chunks/node_modules_next_dist_c2daf96a._.js",
   "static/chunks/node_modules_react-dom_82bb97c6._.js",
-  "static/chunks/node_modules_@mui_material_esm_cc6c2f9f._.js",
-  "static/chunks/node_modules_@mui_system_esm_68dacab0._.js",
-  "static/chunks/node_modules_395b1f3b._.js",
-  "static/chunks/[root-of-the-server]__f47ad340._.js"
+  "static/chunks/node_modules_@mui_system_esm_c0e96e48._.js",
+  "static/chunks/node_modules_@mui_material_esm_109168f7._.js",
+  "static/chunks/node_modules_8746aad7._.js",
+  "static/chunks/[root-of-the-server]__bae66ccb._.js"
 ],
     source: "entry"
 });

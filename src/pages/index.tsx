@@ -1,13 +1,17 @@
-// import Head from "next/head";
-// import Image from "next/image";
-import TodoAppMainPage from "@/components/TodoAppMainPage";
+import Dashboard from "@/components/Dashboard";
 
 export type Task = {
   id: number,
   name: string,
   time: string,
   title: string,
-  description: string
+  description: string,
+  status: string,
+  priority: string,
+  dueDate: string,
+  tags: string,
+  createdAt: string,
+  action: (string | number),
 }
 
 export type Props = {
@@ -16,8 +20,8 @@ export type Props = {
 
 const Home: React.FC<Props> = ({task}) => {
   return (
-    <TodoAppMainPage task={task}/>
-  );
+    <Dashboard task={task}/>
+  )
 }
 
 export const getServerSideProps = async () => {
@@ -25,7 +29,7 @@ export const getServerSideProps = async () => {
   const task: Task = await res.json();
 
   return {
-      props: { task, },
+    props: { task, },
   }
 }
 

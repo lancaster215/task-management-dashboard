@@ -40,9 +40,16 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 ]);
 [__TURBOPACK__imported__module__$5b$externals$5d2f$pg__$5b$external$5d$__$28$pg$2c$__esm_import$29$__] = __turbopack_async_dependencies__.then ? (await __turbopack_async_dependencies__)() : __turbopack_async_dependencies__;
 ;
-const pool = new __TURBOPACK__imported__module__$5b$externals$5d2f$pg__$5b$external$5d$__$28$pg$2c$__esm_import$29$__["Pool"]({
-    connectionString: process.env.DATABASE_URL
-});
+let pool;
+if (!globalThis.pgPool) {
+    globalThis.pgPool = new __TURBOPACK__imported__module__$5b$externals$5d2f$pg__$5b$external$5d$__$28$pg$2c$__esm_import$29$__["Pool"]({
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
+}
+pool = globalThis.pgPool;
 const __TURBOPACK__default__export__ = pool;
 __turbopack_async_result__();
 } catch(e) { __turbopack_async_result__(e); } }, false);}),
@@ -64,26 +71,29 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 async function handler(req, res) {
     try {
         if (req.method === 'POST') {
-            const { name, time } = req.body;
-            if (!name || !time) {
+            const { title, description, status, priority, dueDate, tags } = req.body;
+            if (!title || !dueDate) {
                 return res.status(400).json({
-                    error: 'Name and time are required'
+                    error: 'Title and due data are required'
                 });
             }
-            await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["default"].query('INSERT INTO tasks (name, time) VALUES ($1, $2)', [
-                name,
-                time
+            await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["default"].query(`INSERT INTO "Task" (title, description, status, priority, "dueDate", tags, "createdAt", "updatedAt") 
+        VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())`, [
+                title,
+                description,
+                status,
+                priority,
+                dueDate,
+                tags
             ]);
             return res.status(200).json({
                 message: 'Task added'
             });
         }
-        const result = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["default"].query("SELECT * FROM tasks ORDER BY id DESC");
-        res.status(200).json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error("Database error:", err.message);
         res.status(500).json({
-            error: `Failed to connect to database`
+            error: err.message
         });
     }
 }

@@ -476,21 +476,41 @@ var { k: __turbopack_refresh__, m: module } = __turbopack_context__;
 {
 // import Head from "next/head";
 // import Image from "next/image";
+// import TodoAppMainPage from "@/components/TodoAppMainPage";
 __turbopack_context__.s({
-    "default": ()=>Home
+    "__N_SSP": ()=>__N_SSP,
+    "default": ()=>__TURBOPACK__default__export__
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react/jsx-dev-runtime.js [client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dynamic$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dynamic.js [client] (ecmascript)");
 ;
-function Home() {
-    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(TodoAppMainPage, {}, void 0, false, {
+;
+;
+const TodoAppMainPage = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dynamic$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"])(()=>__turbopack_context__.r("[project]/src/components/TodoAppMainPage.tsx [client] (ecmascript, next/dynamic entry, async loader)")(__turbopack_context__.i), {
+    loadableGenerated: {
+        modules: [
+            "[project]/src/components/TodoAppMainPage.tsx [client] (ecmascript, next/dynamic entry)"
+        ]
+    },
+    ssr: false
+});
+_c = TodoAppMainPage;
+const Home = (param)=>{
+    let { task } = param;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(TodoAppMainPage, {
+        task: task
+    }, void 0, false, {
         fileName: "[project]/src/pages/index.tsx",
-        lineNumber: 7,
+        lineNumber: 27,
         columnNumber: 5
-    }, this);
-}
-_c = Home;
-var _c;
-__turbopack_context__.k.register(_c, "Home");
+    }, ("TURBOPACK compile-time value", void 0));
+};
+_c1 = Home;
+var __N_SSP = true;
+const __TURBOPACK__default__export__ = Home;
+var _c, _c1;
+__turbopack_context__.k.register(_c, "TodoAppMainPage");
+__turbopack_context__.k.register(_c1, "Home");
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);
 }
