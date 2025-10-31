@@ -1,17 +1,22 @@
 (globalThis.TURBOPACK_CHUNK_LISTS = globalThis.TURBOPACK_CHUNK_LISTS || []).push({
     script: typeof document === "object" ? document.currentScript : undefined,
     chunks: [
-  "static/chunks/[root-of-the-server]__bae66ccb._.js",
+  "static/chunks/[root-of-the-server]__a80ff58c._.js",
   "static/chunks/node_modules_next_dist_compiled_next-devtools_index_82a36480.js",
   "static/chunks/node_modules_next_dist_compiled_ca41998d._.js",
   "static/chunks/node_modules_next_dist_shared_lib_492fcef6._.js",
   "static/chunks/node_modules_next_dist_client_becf32a6._.js",
   "static/chunks/node_modules_next_dist_c2daf96a._.js",
   "static/chunks/node_modules_react-dom_82bb97c6._.js",
-  "static/chunks/node_modules_@mui_system_esm_41ce5c4f._.js",
-  "static/chunks/node_modules_@mui_material_esm_d1b2aeca._.js",
+  "static/chunks/node_modules_@mui_system_esm_9e7bc29a._.js",
+  "static/chunks/node_modules_@mui_material_esm_72eb50a5._.js",
   "static/chunks/node_modules_@popperjs_core_lib_525b6336._.js",
-  "static/chunks/node_modules_a675334d._.js"
+  "static/chunks/node_modules_@mui_x-charts_esm_internals_15a4d282._.js",
+  "static/chunks/node_modules_@mui_x-charts_esm_PieChart_bb0618c7._.js",
+  "static/chunks/node_modules_@mui_x-charts_esm_BarChart_62f8850b._.js",
+  "static/chunks/node_modules_@mui_x-charts_esm_0b8a48e6._.js",
+  "static/chunks/node_modules_@mui_x-internal-gestures_esm_core_f4284801._.js",
+  "static/chunks/node_modules_8857f990._.js"
 ],
     source: "entry"
 });

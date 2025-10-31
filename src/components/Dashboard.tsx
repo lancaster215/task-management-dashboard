@@ -4,6 +4,7 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { Props } from '@/pages';
 import TablePanel from './tab_panel/TablePanel';
+import GraphPanel from './tab_panel/graphs';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -11,7 +12,7 @@ interface TabPanelProps {
   value: number;
 }
 
-function CustomTabPanel(props: TabPanelProps) {
+export function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
   return (
@@ -27,7 +28,7 @@ function CustomTabPanel(props: TabPanelProps) {
   );
 }
 
-function a11yProps(index: number) {
+export function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
@@ -58,9 +59,9 @@ export default function Dashboard({task: task}: Props) {
           Item Two
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
-          Item Three
+          <GraphPanel />
         </CustomTabPanel>
       </Box>
     </Box>
-  );
+  )
 }

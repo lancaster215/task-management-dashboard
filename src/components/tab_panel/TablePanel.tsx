@@ -7,8 +7,11 @@ import { Data, Order } from "@/types/tableTypes";
 import { getComparator } from "../helpers/getComparator";
 import EditTaskModal from "../modal/editTaskModal";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useDispatch } from "react-redux";
+import { addTask } from "@/pages/store/taskSlice";
 
 export default function TablePanel({task: initialTasks}: Props) {
+    const dispatch = useDispatch();
     const [tasks, setTasks] = useState<Task[]>(initialTasks)
     const [newTask, setNewTask] = useState({
         title: '',
@@ -35,6 +38,7 @@ export default function TablePanel({task: initialTasks}: Props) {
             const res = await fetch('/api/task');
             const latestTasks = await res.json();
             setTasks(latestTasks);
+            dispatch(addTask(latestTasks))
         };
 
         fetchTasks();
@@ -88,6 +92,7 @@ export default function TablePanel({task: initialTasks}: Props) {
             if(res.ok) {
                 const newTasks = await fetch('/api/task').then(r => r.json());
                 setTasks(newTasks);
+                dispatch(addTask(newTasks))
                 setNewTask({ 
                     title: '', 
                     description: '', 
@@ -114,6 +119,7 @@ export default function TablePanel({task: initialTasks}: Props) {
 
             if(res.ok) {
                 const newTasks = await fetch('/api/task').then(r => r.json());
+                dispatch(addTask(newTasks))
                 setTasks(newTasks);
             }
         } catch (err) {
@@ -138,6 +144,7 @@ export default function TablePanel({task: initialTasks}: Props) {
 
                 if(res.ok) {
                     const newTasks = await fetch('/api/task').then(r => r.json());
+                    dispatch(addTask(newTasks))
                     setTasks(newTasks);
                 }
             } catch (err) {
@@ -176,6 +183,7 @@ export default function TablePanel({task: initialTasks}: Props) {
 
             if(res.ok) {
                 const newTasks = await fetch('/api/task').then(r => r.json());
+                dispatch(addTask(newTasks))
                 setTasks(newTasks);
                 setEditingId(null);
                 setEditingTask(null);
