@@ -1,11 +1,12 @@
 import { Props, Task } from "@/pages";
-import { Box, Button, Checkbox, Paper, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from "@mui/material";
+import { Autocomplete, Box, Button, Checkbox, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Stack, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow, TextField } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import AddTaskModal from "../modal/addTaskModal";
 import EnhancedTableHead from "../custom_components/EnhancedTableHead";
 import { Data, Order } from "@/types/tableTypes";
 import { getComparator } from "../helpers/getComparator";
 import EditTaskModal from "../modal/editTaskModal";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function TablePanel({task: initialTasks}: Props) {
     const [tasks, setTasks] = useState<Task[]>(initialTasks)
@@ -18,13 +19,16 @@ export default function TablePanel({task: initialTasks}: Props) {
         tags: '',
     });
     const [editingId, setEditingId] = useState<number | null>(null);
-    // const [editedTaskName, setEditedTaskName] = useState('');
+    const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [openAddTaskModal, setOpenAddTaskModal] = useState(false);
     const [selected, setSelected] = useState<readonly number[]>([]);
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<keyof Data | 'action'>('status');
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [page, setPage] = useState(0);
+    const [newStatus, setNewStatus] = useState<string>('todo');
+    const [searchText, setSearchText] = useState<string>('');
+    const [searchTextArr, setSearchTextArr] = useState<string[]>([])
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -35,6 +39,19 @@ export default function TablePanel({task: initialTasks}: Props) {
 
         fetchTasks();
     }, []);
+
+    useEffect(() => {
+        if (!searchText.trim()) return;
+
+        const delayDebounce = setTimeout(() => {
+            setSearchTextArr((prev: string[]) => {
+                const updated = [searchText, ...prev.filter(item => item !== searchText)];
+                return updated.slice(0, 5);
+            });
+        }, 1000); // 1 second after typing stops, trigger function
+
+        return () => clearTimeout(delayDebounce);
+    }, [searchText]);
 
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
@@ -103,16 +120,43 @@ export default function TablePanel({task: initialTasks}: Props) {
             console.error(`Error in removing task: ${err}`)
         }
     }
+
+    const handleEditStatus = async (e?: SelectChangeEvent) => {
+        if (e) {
+            setNewStatus(e.target.value)
+            try {
+                const res = await fetch('/api/updateTaskStatus', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        id: selected, 
+                        status: e.target.value.toUpperCase()
+                    })
+                })
+
+                if(res.ok) {
+                    const newTasks = await fetch('/api/task').then(r => r.json());
+                    setTasks(newTasks);
+                }
+            } catch (err) {
+                console.error(`Error in removing task: ${err}`)
+            }
+        }
+    }
     
     const handleEdit = (id: number) => {
         const taskToEdit = tasks.find((task) => task.id === id);
         if(taskToEdit) {
             setEditingId(id);
-            // setEditedTaskName(taskToEdit.name)
+            setEditingTask({ ...taskToEdit });
         }
     }
 
-    const handleSaveEdit = async () => {
+    const handleSaveEdit = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        if (!editingId || !editingTask) return;
         try {
             const res = await fetch('/api/editTask', {
                 method: "POST",
@@ -121,18 +165,20 @@ export default function TablePanel({task: initialTasks}: Props) {
                 },
                 body: JSON.stringify({ 
                     id: editingId, 
-                    title: newTask.title, 
-                    description: newTask.description, 
-                    dueDate: newTask.dueDate,
-                    status: newTask.status,
-                    priority: newTask.priority,
-                    tags: newTask.tags,
+                    title: editingTask.title, 
+                    description: editingTask.description, 
+                    dueDate: editingTask.dueDate,
+                    status: editingTask.status.toUpperCase(),
+                    priority: editingTask.priority.toUpperCase(),
+                    tags: editingTask.tags.toUpperCase(),
                 })
             })
 
             if(res.ok) {
                 const newTasks = await fetch('/api/task').then(r => r.json());
                 setTasks(newTasks);
+                setEditingId(null);
+                setEditingTask(null);
             }
         } catch (err) {
             console.error(`Error in updating task: ${err}`)
@@ -179,6 +225,11 @@ export default function TablePanel({task: initialTasks}: Props) {
         setSelected(newSelected);
     };
 
+    const handleAutocompleteInputChange = (event: React.SyntheticEvent, value: string) => {
+        setSearchText(value);
+    }
+
+    //memoize states that have the potential to create expensive rendering
     const visibleRows = useMemo(
         () =>
         [...tasks]
@@ -186,6 +237,13 @@ export default function TablePanel({task: initialTasks}: Props) {
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
         [order, orderBy, page, rowsPerPage, tasks],
     );
+
+    //If the user search, filter visibleRows by the search text
+    const filteredTasks = searchText ? visibleRows.filter(
+        (rows) => 
+            rows.title.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()) ||
+            rows.description.toLocaleLowerCase().includes(searchText.toLocaleLowerCase())
+    ) : visibleRows
 
     return (
         <>
@@ -199,34 +257,92 @@ export default function TablePanel({task: initialTasks}: Props) {
             <EditTaskModal
                 openEditTaskModal={editingId !== null} 
                 setOpenEditTaskModal={setEditingId}
-                task={tasks.find((task) => task.id === editingId) || {
-                    title: '',
-                    description: '',
-                    status: '',
-                    priority: '',
-                    dueDate: '',
-                    tags: ''
-                }} 
-                setTask={setNewTask} 
+                task={editingTask!}
+                setTask={setEditingTask}
                 handleSubmit={handleSaveEdit}
             />
-            <Box>
-                <Button 
-                    variant="contained" 
-                    color="primary" 
-                    onClick={() => setOpenAddTaskModal(!openAddTaskModal)}
-                >
-                    Add Task
-                </Button>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleDelete}
-                    disabled={selected.length === 0}
-                >
-                    Delete
-                </Button>
-            </Box>
+            <Stack gap={3} direction='row' sx={{justifyContent: 'space-between', display: 'flex'}}>
+                <Stack gap={3} direction='row'>
+                    <Button 
+                        variant="contained" 
+                        color="primary" 
+                        onClick={() => setOpenAddTaskModal(!openAddTaskModal)}
+                    >
+                        Add Task
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={handleDelete}
+                        disabled={selected.length === 0}
+                    >
+                        <DeleteIcon/>
+                    </Button>
+                    {selected.length > 0 && 
+                        <Box>
+                            <Select
+                                labelId="status-label"
+                                id="status"
+                                value={newStatus}
+                                label="Select Status"
+                                onChange={(e) => handleEditStatus(e)}
+                                sx={{
+                                    color: 'white',
+                                    border: '1px solid white',
+                                    '& .MuiSvgIcon-root': { color: 'white' },
+                                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                                }}
+                            >
+                                <MenuItem value="todo">Todo</MenuItem>
+                                <MenuItem value="in_progress">In-Progress</MenuItem>
+                                <MenuItem value="done">Done</MenuItem>
+                            </Select>
+                        </Box>
+                    }
+                </Stack>
+                <Stack>
+                    <Autocomplete
+                        value={searchText}
+                        onInputChange={handleAutocompleteInputChange}
+                        disableClearable
+                        options={searchTextArr}
+                        sx={{ width: 500 }}
+                        renderInput={(params) => (
+                            <TextField
+                            {...params}
+                            label="Search input"
+                            slotProps={{
+                                input: {
+                                ...params.InputProps,
+                                type: 'search',
+                                },
+                            }}
+                            sx={{
+                                input: {
+                                    color: 'white',
+                                    '&::placeholder': {
+                                        color: 'white',
+                                        opacity: 0.8,
+                                    },
+                                    },
+                                    label: { color: 'white' },
+                                    '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: 'white',
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: '#90caf9',
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: '#42a5f5',
+                                    },
+                                },
+                            }}
+                            />
+                        )}
+                    />
+                </Stack>
+            </Stack>
             <Paper sx={{ marginTop: 2, padding: 2 }}>
                 <TableContainer>
                     <Table
@@ -243,7 +359,7 @@ export default function TablePanel({task: initialTasks}: Props) {
                             rowCount={5}
                         />
                         <TableBody>
-                            {visibleRows.map((task, id) => {
+                            {filteredTasks.map((task, id) => {
                                 const isItemSelected = selected.includes(task.id)
                                 return (
                                     <TableRow

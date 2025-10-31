@@ -40,9 +40,16 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 ]);
 [__TURBOPACK__imported__module__$5b$externals$5d2f$pg__$5b$external$5d$__$28$pg$2c$__esm_import$29$__] = __turbopack_async_dependencies__.then ? (await __turbopack_async_dependencies__)() : __turbopack_async_dependencies__;
 ;
-const pool = new __TURBOPACK__imported__module__$5b$externals$5d2f$pg__$5b$external$5d$__$28$pg$2c$__esm_import$29$__["Pool"]({
-    connectionString: process.env.DATABASE_URL
-});
+let pool;
+if (!globalThis.pgPool) {
+    globalThis.pgPool = new __TURBOPACK__imported__module__$5b$externals$5d2f$pg__$5b$external$5d$__$28$pg$2c$__esm_import$29$__["Pool"]({
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
+}
+pool = globalThis.pgPool;
 const __TURBOPACK__default__export__ = pool;
 __turbopack_async_result__();
 } catch(e) { __turbopack_async_result__(e); } }, false);}),
@@ -63,17 +70,28 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 async function handler(req, res) {
     try {
         if (req.method === "POST") {
-            const { id, name } = req.body;
-            await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["default"].query("UPDATE tasks SET name=($1) WHERE id=($2) ", [
-                name,
-                id
+            const { id, title, description, dueDate, status, priority, tags } = req.body;
+            console.log('req body', req.body);
+            await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["default"].query(`UPDATE "Task" 
+                SET title = $2,
+                    description = $3,
+                    "dueDate" = $4,
+                    status = $5,
+                    priority = $6,
+                    tags = $7
+                WHERE id=($1)`, [
+                id,
+                title,
+                description,
+                dueDate,
+                status,
+                priority,
+                tags
             ]);
             return res.status(200).json({
                 message: 'Successfully updated task'
             });
         }
-        const result = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["default"].query("SELECT * FROM tasks ORDER BY id DESC");
-        res.status(200).json(result.rows);
     } catch (err) {
         console.error(`Error in updating task: ${err}`);
     }

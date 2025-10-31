@@ -1,30 +1,18 @@
 import { Box, Button, MenuItem, Modal, Select, TextField } from "@mui/material";
 import styles from "../styles";
 import { formattedDate } from "@/helpers/dateFormatter";
+import { Task } from "@/pages";
 
 type AddTaskModalProps = {
     openEditTaskModal: boolean,
     setOpenEditTaskModal: (open: number | null) => void,
-    task: {
-        title: string,
-        description: string,
-        status: string,
-        priority: string,
-        dueDate: string,
-        tags: string,
-    },
-    setTask: (task: {
-        title: string,
-        description: string,
-        status: string,
-        priority: string,
-        dueDate: string,
-        tags: string,
-    }) => void,
+    task: Task,
+    setTask: React.Dispatch<React.SetStateAction<Task | null>>;
     handleSubmit: (e: React.FormEvent) => void,
 }
 
 export default function EditTaskModal({ openEditTaskModal, setOpenEditTaskModal, task, setTask, handleSubmit }: AddTaskModalProps) {
+    if (!task) return null;
     const handleOnSubmit = (e: React.FormEvent) => {
         handleSubmit(e);
         setOpenEditTaskModal(null)

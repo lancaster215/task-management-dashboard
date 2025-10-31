@@ -1,16 +1,17 @@
 (globalThis.TURBOPACK_CHUNK_LISTS = globalThis.TURBOPACK_CHUNK_LISTS || []).push({
     script: typeof document === "object" ? document.currentScript : undefined,
     chunks: [
+  "static/chunks/[root-of-the-server]__bae66ccb._.js",
   "static/chunks/node_modules_next_dist_compiled_next-devtools_index_82a36480.js",
   "static/chunks/node_modules_next_dist_compiled_ca41998d._.js",
   "static/chunks/node_modules_next_dist_shared_lib_492fcef6._.js",
   "static/chunks/node_modules_next_dist_client_becf32a6._.js",
   "static/chunks/node_modules_next_dist_c2daf96a._.js",
   "static/chunks/node_modules_react-dom_82bb97c6._.js",
-  "static/chunks/node_modules_@mui_system_esm_c0e96e48._.js",
-  "static/chunks/node_modules_@mui_material_esm_109168f7._.js",
-  "static/chunks/node_modules_8746aad7._.js",
-  "static/chunks/[root-of-the-server]__bae66ccb._.js"
+  "static/chunks/node_modules_@mui_system_esm_41ce5c4f._.js",
+  "static/chunks/node_modules_@mui_material_esm_d1b2aeca._.js",
+  "static/chunks/node_modules_@popperjs_core_lib_525b6336._.js",
+  "static/chunks/node_modules_a675334d._.js"
 ],
     source: "entry"
 });

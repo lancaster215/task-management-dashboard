@@ -42,23 +42,25 @@ export default function Dashboard({task: task}: Props) {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="tabs">
-          <Tab label="Table" {...a11yProps(0)} sx={{color: 'white'}}/>
-          <Tab label="Kanban" {...a11yProps(1)} sx={{color: 'white'}} />
-          <Tab label="Graphs" {...a11yProps(2)} sx={{color: 'white'}} />
-        </Tabs>
+    <Box sx={{ width: '100%', justifyContent: 'center', display: 'flex' }}>
+      <Box sx={{width: '80%', backgroundColor: '#0d1117'}}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', justifyContent: 'center', display: 'flex' }}>
+          <Tabs value={value} onChange={handleChange} aria-label="tabs">
+            <Tab label="Table" {...a11yProps(0)} sx={{color: 'white'}}/>
+            <Tab label="Kanban" {...a11yProps(1)} sx={{color: 'white'}} />
+            <Tab label="Graphs" {...a11yProps(2)} sx={{color: 'white'}} />
+          </Tabs>
+        </Box>
+        <CustomTabPanel value={value} index={0}>
+          <TablePanel task={task}/>
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
+          Item Two
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={2}>
+          Item Three
+        </CustomTabPanel>
       </Box>
-      <CustomTabPanel value={value} index={0}>
-        <TablePanel task={task}/>
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        Item Two
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
-        Item Three
-      </CustomTabPanel>
     </Box>
   );
 }
