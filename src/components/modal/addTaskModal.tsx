@@ -1,5 +1,6 @@
-import { Box, Button, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
+import { Box, Button, IconButton, InputAdornment, MenuItem, Modal, Select, TextField } from "@mui/material";
 import styles from "../styles";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 type AddTaskModalProps = {
     openAddTaskModal: boolean,
@@ -32,8 +33,8 @@ export default function AddTaskModal({ openAddTaskModal, setOpenAddTaskModal, ne
         <Modal
             open={openAddTaskModal}
             onClose={() => setOpenAddTaskModal(!openAddTaskModal)}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            aria-labelledby="add-task-modal"
+            aria-describedby="adding-task"
             sx={{ justifyContent: 'center', display: 'flex', alignItems: 'center'}}
         >
             <Box
@@ -58,19 +59,39 @@ export default function AddTaskModal({ openAddTaskModal, setOpenAddTaskModal, ne
                     required
                 />
                 <TextField
-                    label="Due date"
                     name="dueDate"
+                    // label="Due Date"
                     value={newTask.dueDate}
                     onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
                     fullWidth
                     required
                     type="date"
+                    // InputLabelProps={{
+                    //     shrink: true, // keeps the label visible when a date is selected
+                    // }}
+                    InputProps={{
+                        endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton>
+                                <CalendarTodayIcon sx={{ color: "#000000de" }} />
+                            </IconButton>
+                        </InputAdornment>
+                        ),
+                    }}
+                    sx={{
+                        input: { color: "#000000de" },
+                        label: { color: "#000000de" },
+                    }}
                 />
                 <Select
                     labelId="role-label"
                     id="role"
                     value={newTask.priority}
                     label="Select Priority"
+                    sx={{
+                        input: { color: "#000000de" },
+                        label: { color: "#000000de" },
+                    }}
                     onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
                 >
                     <MenuItem value="low">Low</MenuItem>

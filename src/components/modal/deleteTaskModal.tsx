@@ -1,4 +1,4 @@
-import { Box, Button, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
+import { Box, Button, Modal, Typography } from "@mui/material";
 import styles from "../styles";
 
 type DeleteTaskModalProps = {
@@ -6,20 +6,19 @@ type DeleteTaskModalProps = {
     setOpenDeleteTaskModal: (open: boolean) => void,
     onYesButton: (e: React.FormEvent) => void,
     onNoButton: (e: React.FormEvent) => void,
-    windowWidth: number,
 }
 
-export default function DeleteTaskModal({ openDeleteTaskModal, setOpenDeleteTaskModal, onYesButton, onNoButton, windowWidth }: DeleteTaskModalProps) {
+export default function DeleteTaskModal({ openDeleteTaskModal, setOpenDeleteTaskModal, onYesButton, onNoButton }: DeleteTaskModalProps) {
     return (
         <Modal
             open={openDeleteTaskModal}
             onClose={() => setOpenDeleteTaskModal(!openDeleteTaskModal)}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            aria-labelledby="delete-task-modal"
+            aria-describedby="deleting-task"
             sx={{ justifyContent: 'center', display: 'flex', alignItems: 'center'}}
         >
             <Box
-                sx={[styles.formBox, { width: windowWidth <= 375 ? "50vw" : "100vw"}]}
+                sx={styles.formBox}
             >
                 <Typography sx={{color: 'black', fontSize: "clamp(10px, 1.5vw, 16px)"}}>Are you sure you want to delete this task?</Typography>
                 <Button variant="contained" color="primary" onClick={onYesButton} sx={{ fontSize: "clamp(10px, 1.5vw, 16px)" }}>Yes</Button>

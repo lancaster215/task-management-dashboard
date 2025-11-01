@@ -172,6 +172,7 @@ export default function TablePanel({task: initialTasks}: Props) {
     const handleSaveEdit = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (!editingId || !editingTask) return;
+        console.log('editingTask.dueDate', editingTask.dueDate)
         try {
             const res = await fetch('/api/editTask', {
                 method: "POST",
@@ -191,6 +192,7 @@ export default function TablePanel({task: initialTasks}: Props) {
 
             if(res.ok) {
                 const newTasks = await fetch('/api/task').then(r => r.json());
+                console.log('newTasks', newTasks)
                 dispatch(addTask(newTasks))
                 setTasks(newTasks);
                 setEditingId(null);
@@ -282,16 +284,16 @@ export default function TablePanel({task: initialTasks}: Props) {
                 setOpenDeleteTaskModal={setOpenDeleteModal}
                 onYesButton={handleDelete}
                 onNoButton={() => setOpenDeleteModal(!openDeleteModal)}
-                windowWidth={windowWidth}
             />
-            <Stack gap={3} direction={ windowWidth <= 375 ? 'column' : 'row'} sx={{justifyContent: 'space-between', display: windowWidth <= 375 ? "colomn" : 'flex'}}>
+            <Stack gap={3} direction={ windowWidth <= 800 ? 'column' : 'row'} sx={{justifyContent: 'space-between', display: windowWidth <= 375 ? "colomn" : 'flex'}}>
                 <Stack gap={3} direction='row'>
                     <Button 
                         variant="contained" 
                         color="primary" 
                         onClick={() => setOpenAddTaskModal(!openAddTaskModal)}
                         sx={{
-                            fontSize: "clamp(8px, 1.5vw, 16px)"
+                            fontSize: "clamp(8px, 1.5vw, 15px)",
+                            width: '110px'
                         }}
                     >
                         Add Task
@@ -327,13 +329,13 @@ export default function TablePanel({task: initialTasks}: Props) {
                         </Box>
                     }
                 </Stack>
-                <Stack>
+                <Stack sx={{width: 'calc(100vw - (20vw + 48px))'}}>
                     <Autocomplete
                         value={searchText}
                         onInputChange={handleAutocompleteInputChange}
                         disableClearable
                         options={searchTextArr}
-                        sx={{ width: windowWidth <= 375 ? 250 : 500, fontSize: "clamp(8px, 1.5vw, 16px)", }}
+                        sx={{ fontSize: "clamp(8px, 1.5vw, 16px)", }}
                         renderInput={(params) => (
                             <TextField
                                 {...params}

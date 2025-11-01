@@ -29,6 +29,9 @@ export default function TaskCalendar({ task, windowWidth }: Props) {
     const { day, ...pickersDayProps } = dayProps;
     const today = dayjs()
     const isDue = day ? dueDates.includes(day.format('YYYY-MM-DD')) : false;
+    
+    const dueToday = dueDates.find((date) => day.format('YYYY-MM-DD') === date)
+    console.log(dueToday)
     const taskTitles = day
       ? task
           .filter(t => dayjs(t.dueDate).isSame(day, 'day'))
@@ -36,19 +39,21 @@ export default function TaskCalendar({ task, windowWidth }: Props) {
           .join(', ')
       : '';
 
-    console.log(today.format("YYYY-MM-DD") === day.format('YYYY-MM-DD'))
+
     return (
       <Tooltip title={isDue ? taskTitles : ''} arrow>
         <PickersDay
           {...pickersDayProps}
           day={day}
           sx={{
-            bgcolor: today.format("YYYY-MM-DD") === day.format('YYYY-MM-DD') ? 
+            bgcolor: today.format("YYYY-MM-DD") === dueToday ? 
                 '#e5484d' : //due date today
                 (day.format('YYYY-MM-DD') > today.format("YYYY-MM-DD")) && isDue ? 
                 '#0ac54c' : //due date coming
                 isDue ? 
-                '#a0a0a0' :  //due date is overdue
+                '#a0a0a0' : //due date is overdue
+                day.format('YYYY-MM-DD') === today.format("YYYY-MM-DD") ?
+                '#1565c0' : // today
                 undefined,
             color: 'white',
             height: windowWidth <= 375 ? '30px' : undefined,
@@ -68,7 +73,7 @@ export default function TaskCalendar({ task, windowWidth }: Props) {
         sx={{
             // Make all text white
             color: 'white',
-            width: windowWidth <= 375 ? '200px' : undefined,
+            width: windowWidth <= 390 ? '150px' : windowWidth <= 450 ? '190px' : '250px',
             '& .MuiTypography-root': {
                 color: 'white',
             },

@@ -18,13 +18,12 @@ export default function EditTaskModal({ openEditTaskModal, setOpenEditTaskModal,
         setOpenEditTaskModal(null)
     }
 
-    console.log('editing task', task)
     return (
         <Modal
             open={openEditTaskModal}
             onClose={() => setOpenEditTaskModal(null)}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            aria-labelledby="edit-task-modal"
+            aria-describedby="editing-task"
             sx={{ justifyContent: 'center', display: 'flex', alignItems: 'center'}}
         >
             <Box

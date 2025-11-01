@@ -71,19 +71,21 @@ async function handler(req, res) {
     try {
         if (req.method === "POST") {
             const { id, title, description, dueDate, status, priority, tags } = req.body;
-            console.log('req body', req.body);
+            //treat as UTC midnight, remove 8hrs delay when passing the date only 
+            const utcDate = new Date(dueDate + 'T00:00:00Z');
             await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["default"].query(`UPDATE "Task" 
                 SET title = $2,
                     description = $3,
                     "dueDate" = $4,
                     status = $5,
                     priority = $6,
-                    tags = $7
+                    tags = $7,
+                    "updatedAt" = NOW()
                 WHERE id=($1)`, [
                 id,
                 title,
                 description,
-                dueDate,
+                utcDate,
                 status,
                 priority,
                 tags
