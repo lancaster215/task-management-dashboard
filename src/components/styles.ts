@@ -8,7 +8,6 @@ const styles = {
         padding: '24px',
         borderRadius: '8px',
         boxShadow: 24,
-        width: '400px',
     }, 
 }
 

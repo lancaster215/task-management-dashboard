@@ -28,28 +28,35 @@ export default function PieChartPanel({ task: data }: Props) {
         return `${percent.toFixed(0)}%`;
     };
 
-    const sizing = {
-        margin: { right: 5 },
-        width: 300,
-        height: 300,
-    };
-
     return (
         <PieChart
             series={[
                 {
-                outerRadius: 100,
-                data: pieData,
-                arcLabel: getArcLabel,
+                    outerRadius: 100,
+                    data: pieData,
+                    arcLabel: getArcLabel,
                 },
             ]}
             sx={{
                 [`& .${pieArcLabelClasses.root}`]: {
-                fill: "white",
-                fontSize: 14,
+                    fill: "white",
+                    fontSize: 14,
+                },
+                // ✅ Make legend text white
+                "& .MuiChartsLegend-label": {
+                    color: 'white'
+                }
+            }}
+            width={400}
+            height={300}
+            // style={{ alignItems: 'center', justifyItems: 'center' }}
+            // margin={{ right: 100 }}
+            slotProps={{
+                legend: {
+                    direction: "column" as any,
+                    position: { vertical: "middle", horizontal: "center" },
                 },
             }}
-            {...sizing}
         />
     );
 }

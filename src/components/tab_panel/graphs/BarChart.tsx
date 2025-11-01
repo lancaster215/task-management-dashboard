@@ -1,7 +1,23 @@
-import { Props } from "@/pages";
 import { BarChart } from "@mui/x-charts/BarChart";
 
-export default function BarChartPanel({ task: data }: Props) {
+type Props = {
+  task: {
+    id: number,
+    name: string,
+    time: string,
+    title: string,
+    description: string,
+    status: string,
+    priority: string,
+    dueDate: string,
+    tags: string,
+    createdAt: string,
+    action: (string | number),
+  }[],
+  windowWidth: number,
+}
+
+export default function BarChartPanel({ task: data, windowWidth }: Props) {
     if(data.length <= 0) {
         return
     }
@@ -27,7 +43,21 @@ export default function BarChartPanel({ task: data }: Props) {
             xAxis={[{ data: ["Low", "Medium", "High"], scaleType: "band" }]}
             yAxis={[{ width: 50 }]}
             height={300}
-            width={500}
+            width={windowWidth <= 375 ? 300 : 500}
+            sx={{
+                "& .MuiChartsLegend-root": {
+                    color: 'white',
+                },
+                "& .MuiChartsAxis-tickLabel": {
+                    stroke: "white",
+                },
+                "& .MuiChartsAxis-line": {
+                    stroke: "white",
+                },
+                "& .MuiChartsAxis-tick": {
+                    color: "white",
+                },
+            }}
         />
     );
 }

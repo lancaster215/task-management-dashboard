@@ -4,11 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import AddTaskModal from "../modal/addTaskModal";
 import EnhancedTableHead from "../custom_components/EnhancedTableHead";
 import { Data, Order } from "@/types/tableTypes";
-import { getComparator } from "../helpers/getComparator";
+import { getComparator } from "../../helpers/getComparator";
 import EditTaskModal from "../modal/editTaskModal";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from "react-redux";
 import { addTask } from "@/pages/store/taskSlice";
+import DeleteTaskModal from "../modal/deleteTaskModal";
+import { formattedDate } from "@/helpers/dateFormatter";
 
 export default function TablePanel({task: initialTasks}: Props) {
     const dispatch = useDispatch();
@@ -31,9 +33,15 @@ export default function TablePanel({task: initialTasks}: Props) {
     const [page, setPage] = useState(0);
     const [newStatus, setNewStatus] = useState<string>('todo');
     const [searchText, setSearchText] = useState<string>('');
-    const [searchTextArr, setSearchTextArr] = useState<string[]>([])
+    const [searchTextArr, setSearchTextArr] = useState<string[]>([]);
+    const [windowWidth, setWindowWidth] = useState<number>(0);
+    const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
 
     useEffect(() => {
+        if(typeof window !== 'undefined') {
+            const viewportWidth = window.innerWidth;
+            setWindowWidth(viewportWidth)
+        }
         const fetchTasks = async () => {
             const res = await fetch('/api/task');
             const latestTasks = await res.json();
@@ -269,22 +277,32 @@ export default function TablePanel({task: initialTasks}: Props) {
                 setTask={setEditingTask}
                 handleSubmit={handleSaveEdit}
             />
-            <Stack gap={3} direction='row' sx={{justifyContent: 'space-between', display: 'flex'}}>
+            <DeleteTaskModal
+                openDeleteTaskModal={openDeleteModal}
+                setOpenDeleteTaskModal={setOpenDeleteModal}
+                onYesButton={handleDelete}
+                onNoButton={() => setOpenDeleteModal(!openDeleteModal)}
+                windowWidth={windowWidth}
+            />
+            <Stack gap={3} direction={ windowWidth <= 375 ? 'column' : 'row'} sx={{justifyContent: 'space-between', display: windowWidth <= 375 ? "colomn" : 'flex'}}>
                 <Stack gap={3} direction='row'>
                     <Button 
                         variant="contained" 
                         color="primary" 
                         onClick={() => setOpenAddTaskModal(!openAddTaskModal)}
+                        sx={{
+                            fontSize: "clamp(8px, 1.5vw, 16px)"
+                        }}
                     >
                         Add Task
                     </Button>
                     <Button
                         variant="outlined"
                         color="error"
-                        onClick={handleDelete}
+                        onClick={() => setOpenDeleteModal(!openDeleteModal)}
                         disabled={selected.length === 0}
                     >
-                        <DeleteIcon/>
+                        <DeleteIcon sx={{width: 'clamp(15px, 1.5vw, 16px)'}}/>
                     </Button>
                     {selected.length > 0 && 
                         <Box>
@@ -299,11 +317,12 @@ export default function TablePanel({task: initialTasks}: Props) {
                                     border: '1px solid white',
                                     '& .MuiSvgIcon-root': { color: 'white' },
                                     '& .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                                    fontSize: "clamp(10px, 1.5vw, 16px)"
                                 }}
                             >
-                                <MenuItem value="todo">Todo</MenuItem>
-                                <MenuItem value="in_progress">In-Progress</MenuItem>
-                                <MenuItem value="done">Done</MenuItem>
+                                <MenuItem value="todo" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>Todo</MenuItem>
+                                <MenuItem value="in_progress" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>In-Progress</MenuItem>
+                                <MenuItem value="done" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>Done</MenuItem>
                             </Select>
                         </Box>
                     }
@@ -314,38 +333,39 @@ export default function TablePanel({task: initialTasks}: Props) {
                         onInputChange={handleAutocompleteInputChange}
                         disableClearable
                         options={searchTextArr}
-                        sx={{ width: 500 }}
+                        sx={{ width: windowWidth <= 375 ? 250 : 500, fontSize: "clamp(8px, 1.5vw, 16px)", }}
                         renderInput={(params) => (
                             <TextField
-                            {...params}
-                            label="Search input"
-                            slotProps={{
-                                input: {
-                                ...params.InputProps,
-                                type: 'search',
-                                },
-                            }}
-                            sx={{
-                                input: {
-                                    color: 'white',
-                                    '&::placeholder': {
+                                {...params}
+                                label="Search input"
+                                slotProps={{
+                                    input: {
+                                    ...params.InputProps,
+                                    type: 'search',
+                                    },
+                                }}
+                                sx={{
+                                    input: {
                                         color: 'white',
-                                        opacity: 0.8,
+                                        '&::placeholder': {
+                                            color: 'white',
+                                            opacity: 0.8,
+                                            fontSize: "clamp(8px, 1.5vw, 16px)"
+                                        },
+                                        },
+                                        label: { color: 'white' },
+                                        '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'white',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: '#90caf9',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: '#42a5f5',
+                                        },
                                     },
-                                    },
-                                    label: { color: 'white' },
-                                    '& .MuiOutlinedInput-root': {
-                                    '& fieldset': {
-                                        borderColor: 'white',
-                                    },
-                                    '&:hover fieldset': {
-                                        borderColor: '#90caf9',
-                                    },
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: '#42a5f5',
-                                    },
-                                },
-                            }}
+                                }}
                             />
                         )}
                     />
@@ -394,20 +414,22 @@ export default function TablePanel({task: initialTasks}: Props) {
                                             id={task.title}
                                             scope="row"
                                             padding="none"
+                                            sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}
                                         >
                                             {task.title}
                                         </TableCell>
-                                        <TableCell align="left">{task.description}</TableCell>
-                                        <TableCell align="left">{task.status}</TableCell>
-                                        <TableCell align="left">{task.priority}</TableCell>
-                                        <TableCell align="left">{task.tags}</TableCell>
-                                        <TableCell align="left">{task.dueDate}</TableCell>
-                                        <TableCell align="left">{task.createdAt}</TableCell>
+                                        <TableCell align="left" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>{task.description}</TableCell>
+                                        <TableCell align="left" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>{task.status}</TableCell>
+                                        <TableCell align="left" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>{task.priority}</TableCell>
+                                        <TableCell align="left" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>{task.tags}</TableCell>
+                                        <TableCell align="left" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>{formattedDate(task.dueDate)}</TableCell>
+                                        <TableCell align="left" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>{formattedDate(task.createdAt)}</TableCell>
                                         <TableCell align="left">
                                             <Button
                                                 variant="contained" 
                                                 color="primary" 
                                                 onClick={() => handleEdit(task.id)}
+                                                sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}
                                             >
                                                 Edit
                                             </Button>

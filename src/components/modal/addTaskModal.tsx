@@ -34,6 +34,7 @@ export default function AddTaskModal({ openAddTaskModal, setOpenAddTaskModal, ne
             onClose={() => setOpenAddTaskModal(!openAddTaskModal)}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
+            sx={{ justifyContent: 'center', display: 'flex', alignItems: 'center'}}
         >
             <Box
                 component="form"

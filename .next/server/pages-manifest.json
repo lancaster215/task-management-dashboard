@@ -3,6 +3,7 @@
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/_error": "pages/_error.js",
+  "/api/addTask": "pages/api/addTask.js",
   "/api/task": "pages/api/task.js",
   "/api/updateTaskStatus": "pages/api/updateTaskStatus.js"
 }

@@ -25,6 +25,7 @@ export default function EditTaskModal({ openEditTaskModal, setOpenEditTaskModal,
             onClose={() => setOpenEditTaskModal(null)}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
+            sx={{ justifyContent: 'center', display: 'flex', alignItems: 'center'}}
         >
             <Box
                 component="form"

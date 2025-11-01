@@ -37,6 +37,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                         align={'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
+                        sx={{fontSize: "clamp(15px, 1.5vw, 16px)"}}
                     >
                         <TableSortLabel
                             active={orderBy === headCell.id}

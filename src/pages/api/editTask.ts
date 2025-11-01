@@ -13,7 +13,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     "dueDate" = $4,
                     status = $5,
                     priority = $6,
-                    tags = $7
+                    tags = $7,
+                    "updatedAt" = NOW()
                 WHERE id=($1)`, 
                 [id, title, description, dueDate, status, priority, tags]
             );

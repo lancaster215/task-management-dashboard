@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const query = `
             UPDATE "Task"
-            SET status = ($1::text)::"TaskStatus"
+            SET status = ($1::text)::"TaskStatus", "updatedAt" = NOW()
             WHERE id IN (${placeholders})
         `;
 
