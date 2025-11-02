@@ -1,6 +1,7 @@
-import { Box, Button, IconButton, InputAdornment, MenuItem, Modal, Select, TextField } from "@mui/material";
+import { Box, Button, IconButton, InputAdornment, InputLabel, MenuItem, Modal, Select, TextField } from "@mui/material";
 import styles from "../styles";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import { useRef } from "react";
 
 type AddTaskModalProps = {
     openAddTaskModal: boolean,
@@ -25,6 +26,14 @@ type AddTaskModalProps = {
 }
 
 export default function AddTaskModal({ openAddTaskModal, setOpenAddTaskModal, newTask, setNewTask, handleSubmit }: AddTaskModalProps) {
+    const dateInputRef = useRef<HTMLInputElement | null>(null);
+
+    const handleIconClick = () => {
+        if (dateInputRef.current) {
+        dateInputRef.current.showPicker?.(); // ✅ Triggers the browser date picker
+        dateInputRef.current.focus(); // fallback for browsers that don't support showPicker
+        }
+    };
     const handleOnSubmit = (e: React.FormEvent) => {
         handleSubmit(e);
         setOpenAddTaskModal(!openAddTaskModal)
@@ -58,6 +67,9 @@ export default function AddTaskModal({ openAddTaskModal, setOpenAddTaskModal, ne
                     fullWidth
                     required
                 />
+                <InputLabel id="due-date" sx={{ color: "#000000de" }}>
+                    Due Date
+                </InputLabel>
                 <TextField
                     name="dueDate"
                     // label="Due Date"
@@ -66,13 +78,14 @@ export default function AddTaskModal({ openAddTaskModal, setOpenAddTaskModal, ne
                     fullWidth
                     required
                     type="date"
+                    inputRef={dateInputRef}
                     // InputLabelProps={{
                     //     shrink: true, // keeps the label visible when a date is selected
                     // }}
                     InputProps={{
                         endAdornment: (
                         <InputAdornment position="end">
-                            <IconButton>
+                            <IconButton onClick={handleIconClick}>
                                 <CalendarTodayIcon sx={{ color: "#000000de" }} />
                             </IconButton>
                         </InputAdornment>
@@ -83,24 +96,26 @@ export default function AddTaskModal({ openAddTaskModal, setOpenAddTaskModal, ne
                         label: { color: "#000000de" },
                     }}
                 />
+                <InputLabel id="priority-label" sx={{ color: "#000000de" }}>
+                    Select Priority
+                </InputLabel>
                 <Select
-                    labelId="role-label"
-                    id="role"
+                    labelId="priority-label"
+                    id="priority"
                     value={newTask.priority}
-                    label="Select Priority"
-                    sx={{
-                        input: { color: "#000000de" },
-                        label: { color: "#000000de" },
-                    }}
                     onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
+                    label="Select Priority"
                 >
                     <MenuItem value="low">Low</MenuItem>
                     <MenuItem value="medium">Medium</MenuItem>
                     <MenuItem value="high">High</MenuItem>
                 </Select>
+                <InputLabel id="status-label" sx={{ color: "#000000de" }}>
+                    Select Status
+                </InputLabel>
                 <Select
-                    labelId="role-label"
-                    id="role"
+                    labelId="status-label"
+                    id="status"
                     value={newTask.status}
                     label="Select Status"
                     onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
@@ -109,8 +124,11 @@ export default function AddTaskModal({ openAddTaskModal, setOpenAddTaskModal, ne
                     <MenuItem value="in_progress">In-Progress</MenuItem>
                     <MenuItem value="done">Done</MenuItem>
                 </Select>
+                <InputLabel id="tags-label" sx={{ color: "#000000de" }}>
+                    Select Tags
+                </InputLabel>
                 <Select
-                    labelId="role-label"
+                    labelId="tags-label"
                     id="tags"
                     value={newTask.tags}
                     label="Select Tags/Label"

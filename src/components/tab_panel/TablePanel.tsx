@@ -1,5 +1,5 @@
 import { Props, Task } from "@/pages";
-import { Autocomplete, Box, Button, Checkbox, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Stack, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow, TextField } from "@mui/material";
+import { Autocomplete, Box, Button, Checkbox, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Stack, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow, TextField, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import AddTaskModal from "../modal/addTaskModal";
 import EnhancedTableHead from "../custom_components/EnhancedTableHead";
@@ -7,13 +7,21 @@ import { Data, Order } from "@/types/tableTypes";
 import { getComparator } from "../../helpers/getComparator";
 import EditTaskModal from "../modal/editTaskModal";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useDispatch } from "react-redux";
-import { addTask } from "@/pages/store/taskSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addTask, setAssignee } from "@/pages/store/taskSlice";
 import DeleteTaskModal from "../modal/deleteTaskModal";
 import { formattedDate } from "@/helpers/dateFormatter";
+import { RootState } from "@/pages/store";
+import AddNewAccountModal from "../modal/addNewAccount";
+import { v4 as uuidv4 } from "uuid";
+import { User } from "../Dashboard";
 
-export default function TablePanel({task: initialTasks}: Props) {
+export default function TablePanel({task: itasks, assignee}: Props) {
+    if(!assignee) return;
     const dispatch = useDispatch();
+    const { assignee: assigneeFromRedux } = useSelector((state: RootState) => state.task)
+    const finalAssigneeId = assigneeFromRedux ?? assignee
+    const initialTasks = itasks.filter((task) => task.assigneeId === finalAssigneeId.id)
     const [tasks, setTasks] = useState<Task[]>(initialTasks)
     const [newTask, setNewTask] = useState({
         title: '',
@@ -36,6 +44,11 @@ export default function TablePanel({task: initialTasks}: Props) {
     const [searchTextArr, setSearchTextArr] = useState<string[]>([]);
     const [windowWidth, setWindowWidth] = useState<number>(0);
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+    const [openAddNewAccountModal, setOpenAddNewAccountModal] = useState<boolean>(false);
+    const [newUser, setNewUser] = useState<User>({
+        id: '',
+        name: '',
+    })
 
     useEffect(() => {
         if(typeof window !== 'undefined') {
@@ -43,14 +56,23 @@ export default function TablePanel({task: initialTasks}: Props) {
             setWindowWidth(viewportWidth)
         }
         const fetchTasks = async () => {
-            const res = await fetch('/api/task');
-            const latestTasks = await res.json();
-            setTasks(latestTasks);
-            dispatch(addTask(latestTasks))
+            try {
+                const res = await fetch('/api/task');
+                const latestTasks = await res.json();
+                if((assignee || assigneeFromRedux) && latestTasks) {
+                    const finalAssigneeId = assigneeFromRedux ?? assignee
+                    const initialTasks = latestTasks.filter((task: Task) => task.assigneeId === finalAssigneeId.id)
+                    
+                    setTasks(initialTasks);
+                    dispatch(addTask(latestTasks))
+                }
+            } catch(err) {
+                console.log("Error:", err)
+            }
         };
 
         fetchTasks();
-    }, []);
+    }, [assignee, assigneeFromRedux]);
 
     useEffect(() => {
         if (!searchText.trim()) return;
@@ -93,7 +115,8 @@ export default function TablePanel({task: initialTasks}: Props) {
                     status: newTask.status.toUpperCase(), 
                     priority: newTask.priority.toUpperCase(), 
                     dueDate: newTask.dueDate,
-                    tags: newTask.tags.toUpperCase()
+                    tags: newTask.tags.toUpperCase(),
+                    assigneeId: finalAssigneeId.id
                 })
             })
 
@@ -172,7 +195,7 @@ export default function TablePanel({task: initialTasks}: Props) {
     const handleSaveEdit = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (!editingId || !editingTask) return;
-        console.log('editingTask.dueDate', editingTask.dueDate)
+
         try {
             const res = await fetch('/api/editTask', {
                 method: "POST",
@@ -187,14 +210,15 @@ export default function TablePanel({task: initialTasks}: Props) {
                     status: editingTask.status.toUpperCase(),
                     priority: editingTask.priority.toUpperCase(),
                     tags: editingTask.tags.toUpperCase(),
+                    assigneeId: finalAssigneeId.id
                 })
             })
 
             if(res.ok) {
                 const newTasks = await fetch('/api/task').then(r => r.json());
-                console.log('newTasks', newTasks)
-                dispatch(addTask(newTasks))
-                setTasks(newTasks);
+                const initialTasks = newTasks.filter((task: Task) => task.assigneeId === finalAssigneeId.id)
+                dispatch(addTask(initialTasks))
+                setTasks(initialTasks);
                 setEditingId(null);
                 setEditingTask(null);
             }
@@ -217,8 +241,8 @@ export default function TablePanel({task: initialTasks}: Props) {
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-        const newSelected = tasks.map((n) => n.id);
-        setSelected(newSelected);
+            const newSelected = tasks.map((n) => n.id);
+            setSelected(newSelected);
             return;
         }
         setSelected([]);
@@ -247,6 +271,33 @@ export default function TablePanel({task: initialTasks}: Props) {
         setSearchText(value);
     }
 
+    const handleOnSubmit = async (e?: React.FormEvent) => {
+        e?.preventDefault();
+        try {
+            const payload = { 
+                id: uuidv4(),
+                name: newUser.name,
+            }
+            const addUserResponse = await fetch('/api/addUser', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+
+            const addUserData = await addUserResponse.json();
+
+            if (addUserData.user) {
+                dispatch(setAssignee(addUserData.user));
+            }
+        } catch(err) {
+            console.error(`Error in adding user: ${err}`)
+        }
+        setOpenAddNewAccountModal(!openAddNewAccountModal)
+    }
+
+
     //memoize states that have the potential to create expensive rendering
     const visibleRows = useMemo(
         () =>
@@ -262,6 +313,62 @@ export default function TablePanel({task: initialTasks}: Props) {
             rows.title.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()) ||
             rows.description.toLocaleLowerCase().includes(searchText.toLocaleLowerCase())
     ) : visibleRows
+
+    if(assigneeFromRedux.name === '') { // No assignee
+        return (
+            <Box sx={{alignItems: 'center', justifyContent: 'center', display: 'flex', height: '100vh'}}>
+                <Box sx={{textAlign: 'center'}}>
+                    <AddNewAccountModal
+                        openAddNewAccountModal={openAddNewAccountModal}
+                        setOpenAddNewAccountModal={setOpenAddNewAccountModal}
+                        handleOnSubmit={handleOnSubmit}
+                        onNoButton={() => setOpenAddNewAccountModal(!openAddNewAccountModal)}
+                        newUser={newUser}
+                        setNewUser={setNewUser}
+                    />
+                    <Button
+                        variant="contained" 
+                        color="primary" 
+                        onClick={() => setOpenAddNewAccountModal(!openAddNewAccountModal)}
+                        sx={{
+                            fontSize: "clamp(8px, 1.5vw, 15px)",
+                        }}
+                    >
+                    Add assignee
+                    </Button>
+                    <Typography>Please select Assignee</Typography>
+                </Box>
+            </Box>
+        )
+    }
+
+    if(tasks.length === 0) { // No Task for selected assignee
+        return (
+            <Box sx={{alignItems: 'center', justifyContent: 'center', display: 'flex', height: '100vh'}}>
+                <Box sx={{textAlign: 'center'}}>
+                    <AddTaskModal
+                        openAddTaskModal={openAddTaskModal} 
+                        setOpenAddTaskModal={setOpenAddTaskModal}
+                        newTask={newTask} 
+                        setNewTask={setNewTask} 
+                        handleSubmit={handleSubmit}
+                    />
+                    <Button 
+                        variant="contained" 
+                        color="primary" 
+                        onClick={() => setOpenAddTaskModal(!openAddTaskModal)}
+                        sx={{
+                            fontSize: "clamp(8px, 1.5vw, 15px)",
+                            width: '110px'
+                        }}
+                    >
+                        Add Task
+                    </Button>
+                    <Typography>No Task/s for {assigneeFromRedux.name}</Typography>
+                </Box>
+            </Box>
+        )
+    }
 
     return (
         <>
@@ -329,7 +436,7 @@ export default function TablePanel({task: initialTasks}: Props) {
                         </Box>
                     }
                 </Stack>
-                <Stack sx={{width: 'calc(100vw - (20vw + 48px))'}}>
+                <Stack sx={{width: 'calc(100vw - (30vw + 48px))'}}>
                     <Autocomplete
                         value={searchText}
                         onInputChange={handleAutocompleteInputChange}
@@ -387,6 +494,7 @@ export default function TablePanel({task: initialTasks}: Props) {
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
                             rowCount={5}
+                            header='task'
                         />
                         <TableBody>
                             {filteredTasks.map((task, id) => {

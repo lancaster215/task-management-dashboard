@@ -1,8 +1,12 @@
-import { Props } from "@/pages";
+import { Props, Task } from "@/pages";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import { DefaultizedPieValueType } from "@mui/x-charts";
+import { useSelector } from "react-redux";
+import { RootState } from "@/pages/store";
 
-export default function PieChartPanel({ task: data }: Props) {
+export default function PieChartPanel({ task: dataTask }: Props) {
+    const { assignee } = useSelector((state: RootState) => state.task)
+    const data = dataTask.filter((task: Task) => task.assigneeId === assignee.id)
     if(data.length <= 0) {
         return
     }

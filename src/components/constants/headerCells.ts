@@ -1,6 +1,6 @@
 import { HeadCell } from "@/types/tableTypes";
 
-const headCells: readonly HeadCell[] = [
+export const headCells: readonly HeadCell[] = [
     {
         id: 'title',
         numeric: false,
@@ -50,5 +50,3 @@ const headCells: readonly HeadCell[] = [
         label: 'Action',
     },
 ];
-
-export default headCells;

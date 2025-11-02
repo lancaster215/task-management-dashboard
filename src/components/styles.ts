@@ -7,7 +7,7 @@ const styles = {
         backgroundColor: 'background.paper',
         padding: '24px',
         borderRadius: '8px',
-        boxShadow: 24,
+        width: '50%',
     }, 
 }
 

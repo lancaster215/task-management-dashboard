@@ -4,6 +4,9 @@ import { DateCalendar, PickersDay, PickersDayProps } from '@mui/x-date-pickers';
 import { Tooltip } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/pages/store';
+import { Task } from '@/pages';
 
 type Props = {
   task: {
@@ -18,11 +21,15 @@ type Props = {
     tags: string,
     createdAt: string,
     action: (string | number),
+    assigneeId: string,
   }[],
   windowWidth: number,
 }
 
-export default function TaskCalendar({ task, windowWidth }: Props) {
+export default function TaskCalendar({ task: dataTask, windowWidth }: Props) {
+  const { assignee } = useSelector((state: RootState) => state.task)
+  const task = dataTask.filter((task: Task) => task.assigneeId === assignee.id)
+
   const dueDates = task.map(t => dayjs(t.dueDate).format('YYYY-MM-DD'));
 
   const Day = (dayProps: PickersDayProps) => {
@@ -31,7 +38,7 @@ export default function TaskCalendar({ task, windowWidth }: Props) {
     const isDue = day ? dueDates.includes(day.format('YYYY-MM-DD')) : false;
     
     const dueToday = dueDates.find((date) => day.format('YYYY-MM-DD') === date)
-    console.log(dueToday)
+
     const taskTitles = day
       ? task
           .filter(t => dayjs(t.dueDate).isSame(day, 'day'))

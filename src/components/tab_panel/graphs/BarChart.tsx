@@ -1,4 +1,7 @@
+import { Task } from "@/pages";
+import { RootState } from "@/pages/store";
 import { BarChart } from "@mui/x-charts/BarChart";
+import { useSelector } from "react-redux";
 
 type Props = {
   task: {
@@ -13,11 +16,14 @@ type Props = {
     tags: string,
     createdAt: string,
     action: (string | number),
+    assigneeId: string,
   }[],
   windowWidth: number,
 }
 
-export default function BarChartPanel({ task: data, windowWidth }: Props) {
+export default function BarChartPanel({ task: dataTask, windowWidth }: Props) {
+    const { assignee } = useSelector((state: RootState) => state.task)
+    const data = dataTask.filter((task: Task) => task.assigneeId === assignee.id)
     if(data.length <= 0) {
         return
     }

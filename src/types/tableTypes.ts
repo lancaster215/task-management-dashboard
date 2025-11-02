@@ -7,6 +7,7 @@ export interface Data {
   tags: string;
   dueDate: string;
   createdAt: string;
+  name: string;
 }
 
 export type Order = 'asc' | 'desc';

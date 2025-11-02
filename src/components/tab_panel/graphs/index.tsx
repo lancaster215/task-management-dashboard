@@ -1,14 +1,16 @@
 import { a11yProps, CustomTabPanel } from "@/components/Dashboard";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import PieChartPanel from "./PieChart";
 import BarChartPanel from "./BarChart";
 import { useSelector } from "react-redux";
 import { RootState } from "@/pages/store";
 import TaskCalendar from "./Calendar";
+import { Task } from "@/pages";
 
 export default function GraphPanel() {
-    const { task: taskFromStore} = useSelector((state: RootState) => state.task)
+    const { task: taskFromStore, assignee} = useSelector((state: RootState) => state.task)
+    const finalTask = taskFromStore.filter((task: Task) => task.assigneeId === assignee.id)
     const [value, setValue] = useState(0);
     const [windowWidth, setWindowWidth] = useState<number>(0);
  
@@ -22,6 +24,10 @@ export default function GraphPanel() {
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
+
+    if(finalTask.length === 0) {
+        return (<Typography>There is no chart to render.</Typography>)
+    }
 
     return (
         <Box sx={{ justifyContent: 'center', display: 'flex'}}>
