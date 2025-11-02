@@ -15,11 +15,12 @@ import { RootState } from "@/pages/store";
 import AddNewAccountModal from "../modal/addNewAccount";
 import { v4 as uuidv4 } from "uuid";
 import { User } from "../Dashboard";
+import FilterBar from "../custom_components/FilterBar";
 
 export default function TablePanel({task: itasks, assignee}: Props) {
     if(!assignee) return;
     const dispatch = useDispatch();
-    const { assignee: assigneeFromRedux } = useSelector((state: RootState) => state.task)
+    const { assignee: assigneeFromRedux } = useSelector<RootState, RootState['task']>((state) => state.task);
     const finalAssigneeId = assigneeFromRedux ?? assignee
     const initialTasks = itasks.filter((task) => task.assigneeId === finalAssigneeId.id)
     const [tasks, setTasks] = useState<Task[]>(initialTasks)
@@ -49,6 +50,13 @@ export default function TablePanel({task: itasks, assignee}: Props) {
         id: '',
         name: '',
     })
+    const [filters, setFilters] = useState({
+        status: "",
+        priority: "",
+        tags: "",
+        startDate: "",
+        endDate: "",
+    });
 
     useEffect(() => {
         if(typeof window !== 'undefined') {
@@ -297,6 +305,8 @@ export default function TablePanel({task: itasks, assignee}: Props) {
         setOpenAddNewAccountModal(!openAddNewAccountModal)
     }
 
+    
+
 
     //memoize states that have the potential to create expensive rendering
     const visibleRows = useMemo(
@@ -308,11 +318,30 @@ export default function TablePanel({task: itasks, assignee}: Props) {
     );
 
     //If the user search, filter visibleRows by the search text
-    const filteredTasks = searchText ? visibleRows.filter(
+    const filteredSearchedTasks = searchText ? visibleRows.filter(
         (rows) => 
             rows.title.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()) ||
             rows.description.toLocaleLowerCase().includes(searchText.toLocaleLowerCase())
     ) : visibleRows
+
+    const filteredTasks = useMemo(() => {
+        return filteredSearchedTasks.filter((task) => {
+            const matchStatus =
+                !filters.status || task.status.toLowerCase() === filters.status;
+            const matchPriority =
+                !filters.priority || task.priority.toLowerCase() === filters.priority;
+            const matchTags =
+                !filters.tags || task.tags.toLowerCase() === filters.tags;
+            console.log('due date',  formattedDate(task.dueDate), filters.startDate, filters.endDate)
+            const matchDateRange =
+                (!filters.startDate ||
+                formattedDate(task.dueDate) >= filters.startDate) &&
+                (!filters.endDate ||
+                formattedDate(task.dueDate) <= filters.endDate);
+
+            return matchStatus && matchPriority && matchTags && matchDateRange;
+        });
+    }, [filteredSearchedTasks, filters]);
 
     if(assigneeFromRedux.name === '') { // No assignee
         return (
@@ -326,16 +355,16 @@ export default function TablePanel({task: itasks, assignee}: Props) {
                         newUser={newUser}
                         setNewUser={setNewUser}
                     />
-                    <Button
-                        variant="contained" 
-                        color="primary" 
-                        onClick={() => setOpenAddNewAccountModal(!openAddNewAccountModal)}
-                        sx={{
-                            fontSize: "clamp(8px, 1.5vw, 15px)",
-                        }}
-                    >
-                    Add assignee
-                    </Button>
+                        <Button
+                            variant="contained" 
+                            color="primary" 
+                            onClick={() => setOpenAddNewAccountModal(!openAddNewAccountModal)}
+                            sx={{
+                                fontSize: "clamp(8px, 1.5vw, 15px)",
+                            }}
+                        >
+                            Add assignee
+                        </Button>
                     <Typography>Please select Assignee</Typography>
                 </Box>
             </Box>
@@ -392,8 +421,8 @@ export default function TablePanel({task: itasks, assignee}: Props) {
                 onYesButton={handleDelete}
                 onNoButton={() => setOpenDeleteModal(!openDeleteModal)}
             />
-            <Stack gap={3} direction={ windowWidth <= 800 ? 'column' : 'row'} sx={{justifyContent: 'space-between', display: windowWidth <= 375 ? "colomn" : 'flex'}}>
-                <Stack gap={3} direction='row'>
+            <Stack gap={3} direction='column' sx={{justifyContent: 'space-between', display: windowWidth <= 375 ? "colomn" : 'flex'}}>
+                <Stack gap={3} direction='row' flexWrap="wrap">
                     <Button 
                         variant="contained" 
                         color="primary" 
@@ -413,28 +442,42 @@ export default function TablePanel({task: itasks, assignee}: Props) {
                     >
                         <DeleteIcon sx={{width: 'clamp(15px, 1.5vw, 16px)'}}/>
                     </Button>
-                    {selected.length > 0 && 
-                        <Box>
-                            <Select
-                                labelId="status-label"
-                                id="status"
-                                value={newStatus}
-                                label="Select Status"
-                                onChange={(e) => handleEditStatus(e)}
-                                sx={{
-                                    color: 'white',
-                                    border: '1px solid white',
-                                    '& .MuiSvgIcon-root': { color: 'white' },
-                                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-                                    fontSize: "clamp(10px, 1.5vw, 16px)"
-                                }}
-                            >
-                                <MenuItem value="todo" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>Todo</MenuItem>
-                                <MenuItem value="in_progress" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>In-Progress</MenuItem>
-                                <MenuItem value="done" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>Done</MenuItem>
-                            </Select>
-                        </Box>
+                    {selected.length > 0 &&
+                        <>
+                            <Box>
+                                <Select
+                                    labelId="status-label"
+                                    id="status"
+                                    value={newStatus}
+                                    label="Select Status"
+                                    onChange={(e) => handleEditStatus(e)}
+                                    sx={{
+                                        color: 'white',
+                                        border: '1px solid white',
+                                        '& .MuiSvgIcon-root': { color: 'white' },
+                                        '& .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                                        fontSize: "clamp(10px, 1.5vw, 16px)",
+                                    }}
+                                >
+                                    <MenuItem value="todo" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>Todo</MenuItem>
+                                    <MenuItem value="in_progress" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>In-Progress</MenuItem>
+                                    <MenuItem value="done" sx={{fontSize: "clamp(10px, 1.5vw, 16px)"}}>Done</MenuItem>
+                                </Select>
+                            </Box>
+                            
+                        </>
                     }
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: 2,         // or gap: '16px'
+                            rowGap: 3,      // extra vertical spacing
+                            alignItems: 'center',
+                        }}
+                    >
+                        <FilterBar filters={filters} setFilters={setFilters} />
+                    </Box>
                 </Stack>
                 <Stack sx={{width: 'calc(100vw - (30vw + 48px))'}}>
                     <Autocomplete

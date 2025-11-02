@@ -139,7 +139,7 @@ export default function Dashboard({task: task, assignee: preRenderedAssignee}: P
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            <Avatar />
           </IconButton>
         </Tooltip>
       </Box>

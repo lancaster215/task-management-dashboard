@@ -119,7 +119,7 @@ export default function AssigneeTable() {
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
                         >
-                            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                            <Avatar />
                         </IconButton>
                     </Tooltip>
                     <Menu
