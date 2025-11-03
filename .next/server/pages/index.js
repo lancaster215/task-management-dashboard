@@ -8,6 +8,6 @@ runtime.loadChunk("server/chunks/ssr/node_modules_next_ae9d14d1._.js");
 runtime.loadChunk("server/chunks/ssr/node_modules_@mui_system_esm_ffade9cb._.js");
 runtime.loadChunk("server/chunks/ssr/node_modules_@mui_material_esm_45da67b7._.js");
 runtime.loadChunk("server/chunks/ssr/node_modules_@popperjs_core_lib_62fd8b49._.js");
-runtime.loadChunk("server/chunks/ssr/node_modules_101a9dde._.js");
+runtime.loadChunk("server/chunks/ssr/node_modules_f1f4cb66._.js");
 runtime.getOrInstantiateRuntimeModule("[project]/node_modules/next/dist/esm/build/templates/pages.js { INNER_PAGE => \"[project]/src/pages/index.tsx [ssr] (ecmascript)\", INNER_DOCUMENT => \"[project]/src/pages/_document.tsx [ssr] (ecmascript)\", INNER_APP => \"[project]/src/pages/_app.tsx [ssr] (ecmascript)\" } [ssr] (ecmascript)", CHUNK_PUBLIC_PATH);
 module.exports = runtime.getOrInstantiateRuntimeModule("[project]/node_modules/next/dist/esm/build/templates/pages.js { INNER_PAGE => \"[project]/src/pages/index.tsx [ssr] (ecmascript)\", INNER_DOCUMENT => \"[project]/src/pages/_document.tsx [ssr] (ecmascript)\", INNER_APP => \"[project]/src/pages/_app.tsx [ssr] (ecmascript)\" } [ssr] (ecmascript)", CHUNK_PUBLIC_PATH).exports;

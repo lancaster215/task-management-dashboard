@@ -16,7 +16,7 @@ __turbopack_load_page_chunks__("/", [
   "static/chunks/node_modules_@mui_x-charts_esm_0b8a48e6._.js",
   "static/chunks/node_modules_@mui_x-internal-gestures_esm_core_f4284801._.js",
   "static/chunks/node_modules_@mui_x-date-pickers_esm_656d3880._.js",
-  "static/chunks/node_modules_42602920._.js",
+  "static/chunks/node_modules_7708847d._.js",
   "static/chunks/src_pages_index_5771e187._.js",
-  "static/chunks/src_pages_index_4b5c976d._.js"
+  "static/chunks/src_pages_index_17daab50._.js"
 ])

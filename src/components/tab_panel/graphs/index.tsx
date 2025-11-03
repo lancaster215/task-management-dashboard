@@ -10,6 +10,7 @@ import { Task } from "@/pages";
 
 export default function GraphPanel() {
     const { task: taskFromStore, assignee} = useSelector((state: RootState) => state.task)
+    if(!taskFromStore) return;
     const finalTask = taskFromStore.filter((task: Task) => task.assigneeId === assignee.id)
     const [value, setValue] = useState(0);
     const [windowWidth, setWindowWidth] = useState<number>(0);
