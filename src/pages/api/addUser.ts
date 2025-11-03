@@ -19,9 +19,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     return res.status(200).json({ message: "User created", user: newUser });
-  } catch (err: any) {
-    console.error("Database error:", err.message);
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error("Database error:", (error as Error).message);
+    res.status(500).json({ error: (error as Error).message });
   } finally {
     await prisma.$disconnect();
   }

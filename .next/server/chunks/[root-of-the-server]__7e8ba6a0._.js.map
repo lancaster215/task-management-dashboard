@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 29, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Francisco%20Ifurung/Desktop/to-do-app/src/pages/api/task.ts"],"sourcesContent":["// Next.js API route support: https://nextjs.org/docs/api-routes/introduction\nimport type { NextApiRequest, NextApiResponse } from \"next\";\nimport express, { Request, Response } from 'express';\nconst port = 3000;\nconst app = express();\napp.use(express.json());\n\napp.get('/api/data', (req: Request, res: Response) => {\n  res.json({ message: {name: 'Wash Dishes', time: '1'} })\n})\n\napp.listen(3000, () => console.log(`Listening at port ${port}`))\n"],"names":[],"mappings":"AAAA,6EAA6E;;AAE7E;;AACA,MAAM,OAAO;AACb,MAAM,MAAM,CAAA,GAAA,uGAAA,CAAA,UAAO,AAAD;AAClB,IAAI,GAAG,CAAC,uGAAA,CAAA,UAAO,CAAC,IAAI;AAEpB,IAAI,GAAG,CAAC,aAAa,CAAC,KAAc;IAClC,IAAI,IAAI,CAAC;QAAE,SAAS;YAAC,MAAM;YAAe,MAAM;QAAG;IAAE;AACvD;AAEA,IAAI,MAAM,CAAC,MAAM,IAAM,QAAQ,GAAG,CAAC,CAAC,kBAAkB,EAAE,MAAM","debugId":null}}]
-}

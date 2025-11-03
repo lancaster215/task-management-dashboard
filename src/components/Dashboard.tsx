@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
@@ -8,10 +8,10 @@ import GraphPanel from './tab_panel/graphs';
 import { Avatar,  Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from '@mui/material';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import { v4 as uuidv4 } from "uuid";
-import { RootState } from "@/pages/store";
+import { RootState } from "@/store";
 import AddNewAccountModal from './modal/addNewAccount';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAssignee } from '@/pages/store/taskSlice';
+import { setAssignee } from '@/store/taskSlice';
 import { useRouter } from 'next/router';
 
 interface TabPanelProps {

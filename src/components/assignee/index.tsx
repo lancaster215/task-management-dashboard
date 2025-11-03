@@ -1,13 +1,13 @@
-import { Avatar, Box, Button, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow, Tooltip } from "@mui/material"
+import { Avatar, Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow, Tooltip } from "@mui/material"
 import AddNewAccountModal from "../modal/addNewAccount"
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Data, Order } from '@/types/tableTypes';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import EnhancedTableHead from "../custom_components/EnhancedTableHead";
 import { useDispatch, useSelector } from "react-redux";
-import { setAssignee } from "@/pages/store/taskSlice";
-import { RootState } from "@/pages/store";
+import { setAssignee } from "@/store/taskSlice";
+import { RootState } from "@/store";
 import { User } from "../Dashboard";
 import { useRouter } from "next/router";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -89,7 +89,7 @@ export default function AssigneeTable() {
         setAssigneeId(id)
     };
     
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
     };
     

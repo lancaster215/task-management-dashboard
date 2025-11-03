@@ -1,3 +1,4 @@
+import React from 'react';
 import { Box, Button, Modal, TextField } from "@mui/material";
 import styles from "../styles";
 import { User } from "../Dashboard";

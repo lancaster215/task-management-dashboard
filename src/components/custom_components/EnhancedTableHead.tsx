@@ -1,3 +1,4 @@
+import React from 'react';
 import { Checkbox, TableCell, TableHead, TableRow, TableSortLabel } from "@mui/material";
 import { headCells } from "../constants/headerCells";
 import { Data, Order } from "@/types/tableTypes";

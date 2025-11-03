@@ -1,4 +1,5 @@
-import { Box, MenuItem, Select, TextField, Typography, Stack } from "@mui/material";
+import React from 'react';
+import { Box, MenuItem, Select, TextField, Stack } from "@mui/material";
 
 type FilterBarProps = {
     filters: {

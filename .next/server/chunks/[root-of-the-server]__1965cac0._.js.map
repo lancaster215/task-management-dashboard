@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 33, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Francisco%20Ifurung/Desktop/to-do-app/src/lib/db.ts"],"sourcesContent":["import { Pool } from 'pg';\r\n\r\nconst pool = new Pool({\r\n    connectionString: process.env.DATABASE_URL,\r\n})\r\n\r\nexport default pool;"],"names":[],"mappings":";;;AAAA;;;;;;AAEA,MAAM,OAAO,IAAI,oGAAA,CAAA,OAAI,CAAC;IAClB,kBAAkB,QAAQ,GAAG,CAAC,YAAY;AAC9C;uCAEe","debugId":null}},
-    {"offset": {"line": 53, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Francisco%20Ifurung/Desktop/to-do-app/src/pages/api/tasks.ts"],"sourcesContent":["import pool from \"@/lib/db\";\r\nimport { NextRequest, NextResponse } from \"next/server\";\r\n\r\nexport default async function handler(req: NextRequest, res: NextRequest) {\r\n    try {\r\n        const result = await pool.query(\"SELECT * FROM tasks ORDER BY id DESC\");\r\n        return result;\r\n    } catch(err) {\r\n        console.error(err)\r\n    }\r\n}"],"names":[],"mappings":";;;AAAA;;;;;;AAGe,eAAe,QAAQ,GAAgB,EAAE,GAAgB;IACpE,IAAI;QACA,MAAM,SAAS,MAAM,yGAAA,CAAA,UAAI,CAAC,KAAK,CAAC;QAChC,OAAO;IACX,EAAE,OAAM,KAAK;QACT,QAAQ,KAAK,CAAC;IAClB;AACJ","debugId":null}}]
-}

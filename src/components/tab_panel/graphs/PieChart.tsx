@@ -1,8 +1,9 @@
+import React from 'react';
 import { Props, Task } from "@/pages";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
-import { DefaultizedPieValueType } from "@mui/x-charts";
+import { DefaultizedPieValueType, Direction } from "@mui/x-charts";
 import { useSelector } from "react-redux";
-import { RootState } from "@/pages/store";
+import { RootState } from "@/store";
 
 export default function PieChartPanel({ task: dataTask }: Props) {
     const { assignee } = useSelector((state: RootState) => state.task)
@@ -57,7 +58,7 @@ export default function PieChartPanel({ task: dataTask }: Props) {
             // margin={{ right: 100 }}
             slotProps={{
                 legend: {
-                    direction: "column" as any,
+                    direction: "column" as Direction,
                     position: { vertical: "middle", horizontal: "center" },
                 },
             }}

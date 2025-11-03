@@ -28,8 +28,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     return res.status(200).json(newTask);
-  } catch (error: any) {
-    console.error("Database error:", error.message);
-    return res.status(500).json({ error: error.message });
+  } catch (error) {
+    console.error("Database error:", (error as Error).message);
+    return res.status(500).json({ error: (error as Error).message });
   }
 }

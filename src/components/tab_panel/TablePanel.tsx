@@ -1,6 +1,6 @@
 import { Props, Task } from "@/pages";
 import { Autocomplete, Box, Button, Checkbox, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Stack, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow, TextField, Typography } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import AddTaskModal from "../modal/addTaskModal";
 import EnhancedTableHead from "../custom_components/EnhancedTableHead";
 import { Data, Order } from "@/types/tableTypes";
@@ -8,21 +8,36 @@ import { getComparator } from "../../helpers/getComparator";
 import EditTaskModal from "../modal/editTaskModal";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from "react-redux";
-import { addTask, setAssignee } from "@/pages/store/taskSlice";
+import { addTask, setAssignee } from "@/store/taskSlice";
 import DeleteTaskModal from "../modal/deleteTaskModal";
 import { formattedDate } from "@/helpers/dateFormatter";
-import { RootState } from "@/pages/store";
+import { RootState } from "@/store";
 import AddNewAccountModal from "../modal/addNewAccount";
 import { v4 as uuidv4 } from "uuid";
 import { User } from "../Dashboard";
 import FilterBar from "../custom_components/FilterBar";
 
 export default function TablePanel({task: itasks, assignee}: Props) {
-    if(!assignee) return;
     const dispatch = useDispatch();
     const { assignee: assigneeFromRedux } = useSelector<RootState, RootState['task']>((state) => state.task);
     const finalAssigneeId = assigneeFromRedux ?? assignee
-    const initialTasks = itasks.filter((task) => task.assigneeId === finalAssigneeId.id)
+    let initialTasks: Task[] = [{
+        id: 0,
+        name: '',
+        time: '',
+        title: '',
+        description: '',
+        status: '',
+        priority: '',
+        dueDate: '',
+        tags: '',
+        createdAt: '',
+        action: '',
+        assigneeId: '',
+    }]
+    if(itasks.length > 0) {
+        initialTasks = itasks.filter((task) => task.assigneeId === finalAssigneeId.id)
+    }
     const [tasks, setTasks] = useState<Task[]>(initialTasks)
     const [newTask, setNewTask] = useState({
         title: '',
@@ -238,7 +253,7 @@ export default function TablePanel({task: itasks, assignee}: Props) {
         // setEditedTaskName('');
     }
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
     };
 
@@ -398,6 +413,8 @@ export default function TablePanel({task: itasks, assignee}: Props) {
             </Box>
         )
     }
+
+    if(!assignee) return;
 
     return (
         <>
