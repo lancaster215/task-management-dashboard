@@ -1,5 +1,6 @@
 import React from 'react';
 import Dashboard from "@/components/Dashboard";
+import { BASE_URL } from '@/components/constants/baseURL';
 
 export type Task = {
   id: number,
@@ -33,8 +34,8 @@ const Home: React.FC<Props> = ({task, assignee}) => {
 }
 
 export const getServerSideProps = async () => {
-  const res = await fetch('http://localhost:3000/api/task');
-  const assigneeRes = await fetch(('http://localhost:3000/api/users'))
+  const res = await fetch(`${BASE_URL}/api/task`);
+  const assigneeRes = await fetch((`${BASE_URL}/api/users`))
   const task: Task = await res.json();
   const assignee: Assignee = await assigneeRes.json()
 

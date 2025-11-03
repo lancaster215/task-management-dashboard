@@ -11,6 +11,7 @@ import { RootState } from "@/store";
 import { User } from "../Dashboard";
 import { useRouter } from "next/router";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { BASE_URL } from "../constants/baseURL";
 
 export default function AssigneeTable() {
     const dispatch = useDispatch();
@@ -33,7 +34,7 @@ export default function AssigneeTable() {
 
     useEffect(() => {
         const fetchAssignees = async () => {
-            const res = await fetch('/api/users');
+            const res = await fetch(`${BASE_URL}/api/users`);
             const latestUserAssignee = await res.json();
             setUserAssignee(latestUserAssignee);
         };
@@ -55,14 +56,14 @@ export default function AssigneeTable() {
                 id: uuidv4(),
                 name: newUser.name,
             }
-            await fetch('/api/addUser', {
+            await fetch(`${BASE_URL}/api/addUser`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": 'application/json'
                 },
                 body: JSON.stringify(payload)
             })
-            const res = await fetch('/api/users');
+            const res = await fetch(`${BASE_URL}/api/users`);
             const latestUserAssignee = await res.json();
             setUserAssignee(latestUserAssignee);
         } catch(err) {

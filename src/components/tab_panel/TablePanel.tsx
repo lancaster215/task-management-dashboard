@@ -16,6 +16,7 @@ import AddNewAccountModal from "../modal/addNewAccount";
 import { v4 as uuidv4 } from "uuid";
 import { User } from "../Dashboard";
 import FilterBar from "../custom_components/FilterBar";
+import { BASE_URL } from "../constants/baseURL";
 
 export default function TablePanel({task: itasks, assignee}: Props) {
     const dispatch = useDispatch();
@@ -80,7 +81,7 @@ export default function TablePanel({task: itasks, assignee}: Props) {
         }
         const fetchTasks = async () => {
             try {
-                const res = await fetch('/api/task');
+                const res = await fetch(`${BASE_URL}/api/task`);
                 const latestTasks = await res.json();
                 if((assignee || assigneeFromRedux) && latestTasks) {
                     const finalAssigneeId = assigneeFromRedux ?? assignee
@@ -127,7 +128,7 @@ export default function TablePanel({task: itasks, assignee}: Props) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const res = await fetch('/api/addTask', {
+            const res = await fetch(`${BASE_URL}/api/addTask`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": 'application/json'
@@ -144,7 +145,7 @@ export default function TablePanel({task: itasks, assignee}: Props) {
             })
 
             if(res.ok) {
-                const newTasks = await fetch('/api/task').then(r => r.json());
+                const newTasks = await fetch(`${BASE_URL}/api/task`).then(r => r.json());
                 setTasks(newTasks);
                 dispatch(addTask(newTasks))
                 setNewTask({ 
@@ -163,7 +164,7 @@ export default function TablePanel({task: itasks, assignee}: Props) {
 
     const handleDelete = async() => {
         try {
-            const res = await fetch('/api/removeTask', {
+            const res = await fetch(`${BASE_URL}/api/removeTask`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": 'application/json'
@@ -172,7 +173,7 @@ export default function TablePanel({task: itasks, assignee}: Props) {
             })
 
             if(res.ok) {
-                const newTasks = await fetch('/api/task').then(r => r.json());
+                const newTasks = await fetch(`${BASE_URL}/api/task`).then(r => r.json());
                 dispatch(addTask(newTasks))
                 setTasks(newTasks);
             }
@@ -185,7 +186,7 @@ export default function TablePanel({task: itasks, assignee}: Props) {
         if (e) {
             setNewStatus(e.target.value)
             try {
-                const res = await fetch('/api/updateTaskStatus', {
+                const res = await fetch(`${BASE_URL}/updateTaskStatus`, {
                     method: 'POST',
                     headers: {
                         "Content-Type": 'application/json'
@@ -197,7 +198,7 @@ export default function TablePanel({task: itasks, assignee}: Props) {
                 })
 
                 if(res.ok) {
-                    const newTasks = await fetch('/api/task').then(r => r.json());
+                    const newTasks = await fetch(`${BASE_URL}/api/task`).then(r => r.json());
                     dispatch(addTask(newTasks))
                     setTasks(newTasks);
                 }
@@ -220,7 +221,7 @@ export default function TablePanel({task: itasks, assignee}: Props) {
         if (!editingId || !editingTask) return;
 
         try {
-            const res = await fetch('/api/editTask', {
+            const res = await fetch(`${BASE_URL}/api/editTask`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -238,7 +239,7 @@ export default function TablePanel({task: itasks, assignee}: Props) {
             })
 
             if(res.ok) {
-                const newTasks = await fetch('/api/task').then(r => r.json());
+                const newTasks = await fetch(`${BASE_URL}/task`).then(r => r.json());
                 const initialTasks = newTasks.filter((task: Task) => task.assigneeId === finalAssigneeId.id)
                 dispatch(addTask(initialTasks))
                 setTasks(initialTasks);
@@ -301,7 +302,7 @@ export default function TablePanel({task: itasks, assignee}: Props) {
                 id: uuidv4(),
                 name: newUser.name,
             }
-            const addUserResponse = await fetch('/api/addUser', {
+            const addUserResponse = await fetch(`${BASE_URL}/addUser`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": 'application/json'

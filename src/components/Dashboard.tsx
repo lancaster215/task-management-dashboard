@@ -13,6 +13,7 @@ import AddNewAccountModal from './modal/addNewAccount';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAssignee } from '@/store/taskSlice';
 import { useRouter } from 'next/router';
+import { BASE_URL } from './constants/baseURL';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -81,7 +82,7 @@ export default function Dashboard({task: task, assignee: preRenderedAssignee}: P
         id: uuidv4(),
         name: newUser.name,
         }
-        const addUserResponse = await fetch('/api/addUser', {
+        const addUserResponse = await fetch(`${BASE_URL}/api/addUser`, {
           method: 'POST',
           headers: {
               "Content-Type": 'application/json'

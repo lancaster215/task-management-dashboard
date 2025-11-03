@@ -1,16 +1,9 @@
 {
   "/_app": "pages/_app.js",
-  "/api/addTask": "pages/api/addTask.js",
   "/_error": "pages/_error.js",
-  "/api/custom/limiter": "pages/api/custom/limiter.js",
-  "/api/task": "pages/api/task.js",
-  "/api/removeTask": "pages/api/removeTask.js",
   "/_document": "pages/_document.js",
-  "/api/updateTaskStatus": "pages/api/updateTaskStatus.js",
-  "/api/editTask": "pages/api/editTask.js",
-  "/api/users": "pages/api/users.js",
-  "/api/addUser": "pages/api/addUser.js",
-  "/assignee": "pages/assignee.html",
   "/": "pages/index.js",
-  "/404": "pages/404.html"
+  "/api/users": "pages/api/users.js",
+  "/api/task": "pages/api/task.js",
+  "/assignee": "pages/assignee.js"
 }
